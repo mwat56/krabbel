@@ -38,7 +38,16 @@ you can run it by calling it with the start URL to use, e.g.
 
 	./krabbel http://127.0.0.1:8080/
 
-Depending on the number of linked pages
+Depending on the number of linked pages it might run a few seconds while printing out the respective page processed and finally showing a line like
+
+	2019/10/28 23:37:41 Krabbel checked 3422 pages in 5.9901556s
+
+The actual number of pages shown and the time used will change depending on the load of the computer you use to run the tool and the load of the server tested.
+Things like routing details and network latency will take their time as well.
+In other words: This is _not_ a benchmarking tool.
+
+> Please _note_ that you should use this tool only with web-servers/-pages that you're personally responsible for.
+> Do _not_ use this tool with servers you don't own – that's not only impolite but also _illegal_ in some countries.
 
 ## Licence
 
