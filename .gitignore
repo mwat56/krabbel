@@ -1,0 +1,7 @@
+*~
+.git/
+*.ini
+krabbel
+*.log
+TODO*
+.vscode/
