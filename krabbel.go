@@ -34,6 +34,7 @@ func getStartURL(aURL string) string {
 //
 //	`aBaseURL` The start of all the local URLs.
 //	`aURL` The page URL to process.
+//	`aList` The channel to receive the list of links.
 func goProcessURL(aBaseURL, aURL string, aList chan<- []string) {
 	if page, err := readPage(aURL); nil == err {
 		if links := pageLinks(aBaseURL, page); nil != links {
@@ -43,7 +44,7 @@ func goProcessURL(aBaseURL, aURL string, aList chan<- []string) {
 } // goProcessURL()
 
 var (
-	// RegEx to match complete link tags
+	// RegEx to match complete link tags.
 	hrefRE = regexp.MustCompile(`(?si)(<a[^>]*href=")([^"#]+)([^"]*"[^>]*>)`)
 	//                                1              2       3
 
@@ -89,7 +90,7 @@ func readPage(aURL string) ([]byte, error) {
 	req.Header.Set(`Referer`, `https://github.com/mwat56/krabbel`)
 
 	client := &http.Client{
-		Timeout: 3 * time.Second,
+		Timeout: 10 * time.Second,
 	}
 	fmt.Println(`Reading`, aURL)
 	resp, err := client.Do(req)
@@ -140,7 +141,7 @@ func Crawl(aStartURL string) int {
 
 		default:
 			empty++
-			if 2 < empty {
+			if 3 < empty {
 				return len(checked) // nothing more to do
 			}
 			time.Sleep(halfSecond)
