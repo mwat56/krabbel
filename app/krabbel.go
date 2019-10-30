@@ -18,13 +18,13 @@ import (
 
 func main() {
 	if 2 > len(os.Args) {
-		log.Fatal("\n\t", os.Args[0], " <pageURL>\n\n")
+		log.Fatal("call:\n\n\t", os.Args[0], " <pageURL>\n\n")
 	}
 	URL := os.Args[1]
 	startTime := time.Now()
 	checked := krabbel.Crawl(URL)
 	elapsed := time.Since(startTime)
-	log.Printf("Krabbel checked %d pages in %s", checked, elapsed)
+	log.Printf("checked %d pages in %s", checked, elapsed)
 } // main()
 
 /* EoF */
