@@ -6,7 +6,7 @@
 [![Issues](https://img.shields.io/github/issues/mwat56/krabbel.svg)](https://github.com/mwat56/krabbel/issues?q=is%3Aopen+is%3Aissue)
 [![Size](https://img.shields.io/github/repo-size/mwat56/krabbel.svg)](https://github.com/mwat56/krabbel/)
 [![Tag](https://img.shields.io/github/tag/mwat56/krabbel.svg)](https://github.com/mwat56/krabbel/tags)
-[![View examples](https://img.shields.io/badge/learn%20by-examples-0077b3.svg)](https://github.com/mwat56/krabbel/blob/master/cmd/krabbel.go)
+[![View examples](https://img.shields.io/badge/learn%20by-examples-0077b3.svg)](https://github.com/mwat56/krabbel/blob/master/app/krabbel.go)
 [![License](https://img.shields.io/github/mwat56/krabbel.svg)](https://github.com/mwat56/krabbel/blob/master/LICENSE)
 
 - [Krabbel](#krabbel)
@@ -40,7 +40,7 @@ you can run it by calling it with the start URL to use, e.g.
 
 Depending on the number of linked pages it might run a few seconds while printing out the respective page processed and finally showing a line like
 
-	2019/10/28 23:37:41 Krabbel checked 3422 pages in 5.9901556s
+	2019/10/28 23:37:41 checked 3422 pages in 5.9901556s
 
 The actual number of pages shown and the time used will change depending on the load of the computer you use to run the tool and the load of the server tested.
 Things like routing details and network latency will take their time as well.
