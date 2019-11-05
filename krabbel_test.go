@@ -6,13 +6,11 @@
 
 package krabbel
 
-//lint:file-ignore ST1017 - I prefer Yoda conditions
-
 import (
 	"testing"
 )
 
-func Test_parseStartURL(t *testing.T) {
+func Test_getStartURL(t *testing.T) {
 	type args struct {
 		aURL string
 	}
@@ -30,11 +28,11 @@ func Test_parseStartURL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := getStartURL(tt.args.aURL); got != tt.want {
-				t.Errorf("parseStartURL() = %v,\nwant %v", got, tt.want)
+				t.Errorf("getStartURL() = %v,\nwant %v", got, tt.want)
 			}
 		})
 	}
-} // Test_parseStartURL()
+} // Test_getStartURL()
 
 func Test_readPage(t *testing.T) {
 	var w1 []byte
@@ -84,9 +82,6 @@ func Test_pageLinks(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotRList := pageLinks(tt.args.aBaseURL, tt.args.aPage)
-			// if !reflect.DeepEqual(gotRList, tt.wantRList) {
-			// 	t.Errorf("pageLinks() = %v, want %v", gotRList, tt.wantRList)
-			// }
 			if 0 == len(gotRList) {
 				t.Errorf("pageLinks() = %v, want (!nil)", gotRList)
 			}

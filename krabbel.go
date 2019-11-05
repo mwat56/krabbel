@@ -13,21 +13,30 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"regexp"
 	"strings"
 	"time"
 )
 
-// `getStartURL()` returns the base of `aURL`.
-func getStartURL(aURL string) string {
-	if 0 < len(aURL) {
-		if parsed, err := url.Parse(aURL); nil == err {
-			return fmt.Sprintf("%s://%s", parsed.Scheme, parsed.Host)
-		}
-	}
+var (
+	// RegEx to match complete link tags.
+	hrefRE = regexp.MustCompile(`(?si)(<a[^>]*href=")([^"#]+)([^"]*"[^>]*>)`)
+	//                                1              2       3
 
-	return ""
+	// RegEx to check whether an URL starts with a scheme.
+	schemeRE = regexp.MustCompile(`^\w+:`)
+
+	// RegEx to get the base of an URL.
+	startRE = regexp.MustCompile(`^(\w+://[^/]+)`)
+)
+
+// `getStartURL()` returns the base of `aURL`.
+//
+// (Used during debugging.)
+func getStartURL(aURL string) (rURL string) {
+	rURL = startRE.FindString(aURL)
+
+	return
 } // getStartURL()
 
 // `goProcessURL()` reads `aURL` and sends the links therein to `aList`.
@@ -42,15 +51,6 @@ func goProcessURL(aBaseURL, aURL string, aList chan<- []string) {
 		}
 	}
 } // goProcessURL()
-
-var (
-	// RegEx to match complete link tags.
-	hrefRE = regexp.MustCompile(`(?si)(<a[^>]*href=")([^"#]+)([^"]*"[^>]*>)`)
-	//                                1              2       3
-
-	// RegEx to check whether an URL starts with a scheme.
-	schemeRE = regexp.MustCompile(`^\w+:`)
-)
 
 // `pageLinks()` extracts the A/HREF links in `aPage`
 // returning them in a list.
@@ -122,7 +122,7 @@ func Crawl(aStartURL string) int {
 		linkList = make(chan []string, 63)
 	)
 	linkList <- []string{aStartURL}
-	baseURL := getStartURL(aStartURL)
+	baseURL := startRE.FindString(aStartURL)
 
 	for {
 		select {
