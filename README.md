@@ -13,6 +13,7 @@
 	- [Purpose](#purpose)
 	- [Installation](#installation)
 	- [Usage](#usage)
+	- [Stress](#stress)
 	- [Licence](#licence)
 
 ## Purpose
@@ -48,6 +49,15 @@ In other words: This is _not_ a benchmarking tool.
 
 > Please _note_ that you should use this tool only with web-servers/-pages that you're personally responsible for.
 > Do _not_ use this tool with servers you don't own – that's not only impolite but also _illegal_ in some countries.
+
+## Stress
+
+This package provides a rather simple shell script which starts several instances of `krabbel` concurrently to simulate some kind of request-stress for a given URL.
+You call call this, for example, by
+
+	./stress.sh http://127.0.0.1:8080/
+
+The script will start `krabbel` several times while suppressing standard output thus requesting all the linked pages in the given URL.
 
 ## Licence
 
