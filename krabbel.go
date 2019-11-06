@@ -20,8 +20,8 @@ import (
 
 var (
 	// RegEx to match complete link tags.
-	hrefRE = regexp.MustCompile(`(?si)(<a[^>]*href=")([^"#]+)([^"]*"[^>]*>)`)
-	//                                1              2       3
+	hrefRE = regexp.MustCompile(`(?si)(<a[^>]+href=")([^"#]+)[^"]*"[^>]*>`)
+	//                                1              2
 
 	// RegEx to check whether an URL starts with a scheme.
 	schemeRE = regexp.MustCompile(`^\w+:`)
@@ -29,15 +29,6 @@ var (
 	// RegEx to get the base of an URL.
 	startRE = regexp.MustCompile(`^(\w+://[^/]+)`)
 )
-
-// `getStartURL()` returns the base of `aURL`.
-//
-// (Used during debugging.)
-func getStartURL(aURL string) (rURL string) {
-	rURL = startRE.FindString(aURL)
-
-	return
-} // getStartURL()
 
 // `goProcessURL()` reads `aURL` and sends the links therein to `aList`.
 //
@@ -90,7 +81,7 @@ func readPage(aURL string) ([]byte, error) {
 	req.Header.Set(`Referer`, `https://github.com/mwat56/krabbel`)
 
 	client := &http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 3 * time.Second,
 	}
 	fmt.Println(`Reading`, aURL)
 	resp, err := client.Do(req)

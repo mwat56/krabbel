@@ -6,33 +6,11 @@
 
 package krabbel
 
+//lint:file-ignore ST1017 - I prefer Yoda conditions
+
 import (
 	"testing"
 )
-
-func Test_getStartURL(t *testing.T) {
-	type args struct {
-		aURL string
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		// TODO: Add test cases.
-		{" 1", args{``}, ``},
-		{" 2", args{`http://127.0.0.1`}, `http://127.0.0.1`},
-		{" 3", args{`http://127.0.0.1:8080`}, `http://127.0.0.1:8080`},
-		{" 4", args{`http://127.0.0.1:8080/dir/`}, `http://127.0.0.1:8080`},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := getStartURL(tt.args.aURL); got != tt.want {
-				t.Errorf("getStartURL() = %v,\nwant %v", got, tt.want)
-			}
-		})
-	}
-} // Test_getStartURL()
 
 func Test_readPage(t *testing.T) {
 	var w1 []byte
@@ -64,7 +42,7 @@ func Test_readPage(t *testing.T) {
 } // Test_readPage()
 
 func Test_pageLinks(t *testing.T) {
-	bu1 := getStartURL("http://dev.mwat.de/")
+	bu1 := startRE.FindString("http://dev.mwat.de/")
 	p1, _ := readPage(bu1)
 	var w1 []string
 	type args struct {
