@@ -19,6 +19,20 @@ import (
 )
 
 var (
+	// Arbitary list of file extensions to exclude from reading/parsing.
+	binExts = []string{
+		".amr", ".avi", ".azw3", ".bak", ".bibtex", ".bin", ".bz2",
+		".cfg", ".com", ".conf", ".css", ".csv",
+		".db", ".deb", ".doc", ".docx", ".dia", ".epub", ".exe",
+		".flv", ".gz", ".ics", ".iso", ".jar", ".jpeg", ".json",
+		".log", ".mobi", ".mp3", ".mp4", ".mpeg",
+		".odf", ".odg", ".odp", ".ods", ".odt", ".otf", ".oxt",
+		".pas", ".pdf", ".pl", ".ppd", ".ppt", ".pptx",
+		".rip", ".rpm", ".sh", ".spk", ".sql", ".sxg", ".sxw",
+		".ttf", ".txt", ".vbox", ".vmdk", ".vcs",
+		".wav", ".xls", ".xpi", ".xsl", ".zip",
+	}
+
 	// RegEx to match complete link tags.
 	hrefRE = regexp.MustCompile(`(?si)(<a[^>]+href=")([^"#]+)[^"]*"[^>]*>`)
 	//                                1              2
@@ -54,8 +68,17 @@ func pageLinks(aBaseURL string, aPage []byte) (rList []string) {
 		return
 	}
 
-	for l, cnt := len(linkMatches), 0; cnt < l; cnt++ {
+	for cnt, l := 0, len(linkMatches); cnt < l; cnt++ {
 		link := string(linkMatches[cnt][2])
+		if 0 < len(link) {
+			// check for certain binary file extensions
+			for _, ext := range binExts {
+				if strings.HasSuffix(link, ext) {
+					link = ""
+					break
+				}
+			}
+		}
 		if 0 == len(link) {
 			continue
 		}
@@ -63,7 +86,7 @@ func pageLinks(aBaseURL string, aPage []byte) (rList []string) {
 			rList = append(rList, link)
 		} else if strings.HasPrefix(link, `/`) {
 			rList = append(rList, aBaseURL+link)
-		} else if !schemeRE.MatchString(link) { // no external link
+		} else if !schemeRE.MatchString(link) { // skip external links
 			rList = append(rList, aBaseURL+`/`+link)
 		}
 	}
@@ -81,7 +104,7 @@ func readPage(aURL string) ([]byte, error) {
 	req.Header.Set(`Referer`, `https://github.com/mwat56/krabbel`)
 
 	client := &http.Client{
-		Timeout: 3 * time.Second,
+		Timeout: 10 * time.Minute, // prepare for looong response bodies
 	}
 	fmt.Println(`Reading`, aURL)
 	resp, err := client.Do(req)
