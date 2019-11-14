@@ -36,18 +36,26 @@ First you've to compile the main file
 
 you can run it by calling it with the start URL to use, e.g.
 
-	./krabbel http://127.0.0.1:8080/
+	./krabbel -url http://127.0.0.1:8080/
 
 Depending on the number of linked pages it might run a few seconds while printing out the respective page processed and finally showing a line like
 
 	2019/10/28 23:37:41 checked 3422 pages in 5.9901556s
 
-The actual number of pages shown and the time used will change depending on the load of the computer you use to run the tool and the load of the server tested.
+The actual number of pages shown and the time used will, of course, change depending on the load of the computer you use to run the tool and the load of the server tested.
 Things like routing details and network latency will take their time as well.
 In other words: This is _not_ a benchmarking tool.
 
+Sometimes the URLs in page links contain socalled CGI attributes carrying session specific data.
+In this cases the respective server's execution path may depend on the value of that CGI attribute.
+`krabbel` offers a second commandline option `-cgi`; this is a boolean value (default value is `true`) determining whether to use CGI attributes when crawling through the web pages or not:
+
+	./krabbel -url=http://127.0.0.1:8080/ -cgi=false
+
+Here all possible CGI attributes of linked URLs will be ignored while crawling through the given URL's links.
+
 > Please _note_ that you should use this tool only with web-servers/-pages that you're personally responsible for.
-> Do _not_ use this tool with servers you don't own – that's not only impolite but also _illegal_ in some countries.
+> Do _not_ use this tool with servers you don't own – that's not only impolite but also _illegal_ in certain countries.
 
 ## Licence
 
