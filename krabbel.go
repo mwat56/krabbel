@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"regexp"
 	"strings"
@@ -19,15 +20,16 @@ import (
 )
 
 var (
-	// Arbitary list of file extensions to exclude from reading/parsing.
+	// Arbitrary list of file extensions to exclude from reading/parsing.
 	binExts = []string{
 		".amr", ".avi", ".azw3", ".bak", ".bibtex", ".bin", ".bz2",
 		".cfg", ".com", ".conf", ".css", ".csv",
 		".db", ".deb", ".doc", ".docx", ".dia", ".epub", ".exe",
-		".flv", ".gz", ".ics", ".iso", ".jar", ".jpeg", ".json",
+		".flv", ".gif", ".gz", ".ics", ".iso",
+		".jar", ".jpeg", ".jpg", ".json",
 		".log", ".mobi", ".mp3", ".mp4", ".mpeg",
 		".odf", ".odg", ".odp", ".ods", ".odt", ".otf", ".oxt",
-		".pas", ".pdf", ".pl", ".ppd", ".ppt", ".pptx",
+		".pas", ".pdf", ".pl", ".png", ".ppd", ".ppt", ".pptx",
 		".rip", ".rpm", ".sh", ".spk", ".sql", ".sxg", ".sxw",
 		".ttf", ".txt", ".vbox", ".vmdk", ".vcs",
 		".wav", ".xls", ".xpi", ".xsl", ".zip",
@@ -94,6 +96,10 @@ func pageLinks(aBaseURL string, aPage []byte) (rList []string) {
 	return
 } // pageLinks()
 
+const (
+	tenSex = 10 * time.Second
+)
+
 // `readPage()` requests a single page identified by `aURL`
 // returning its contents.
 func readPage(aURL string) ([]byte, error) {
@@ -104,8 +110,18 @@ func readPage(aURL string) ([]byte, error) {
 	req.Header.Set(`Referer`, `https://github.com/mwat56/krabbel`)
 
 	client := &http.Client{
+		Transport: &http.Transport{
+			DialContext: (&net.Dialer{
+				Timeout:   tenSex,
+				KeepAlive: tenSex,
+			}).DialContext,
+			ExpectContinueTimeout: tenSex,
+			ResponseHeaderTimeout: tenSex,
+			TLSHandshakeTimeout:   tenSex,
+		},
 		Timeout: 10 * time.Minute, // prepare for looong response bodies
 	}
+
 	fmt.Println(`Reading`, aURL)
 	resp, err := client.Do(req)
 	if nil != err {
