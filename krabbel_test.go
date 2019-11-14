@@ -15,7 +15,8 @@ import (
 func Test_readPage(t *testing.T) {
 	var w1 []byte
 	type args struct {
-		aURL string
+		aURL    string
+		aUseCGI bool
 	}
 	tests := []struct {
 		name    string
@@ -24,8 +25,8 @@ func Test_readPage(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{" 1", args{"http://www.mwat.de/"}, w1, false},
-		{" 2", args{"http://mmm.mwat.de/bla"}, w1, true},
+		{" 1", args{"http://www.mwat.de/", true}, w1, false},
+		{" 2", args{"http://mmm.mwat.de/bla", true}, w1, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -48,6 +49,7 @@ func Test_pageLinks(t *testing.T) {
 	type args struct {
 		aBaseURL string
 		aPage    []byte
+		aUseCGI  bool
 	}
 	tests := []struct {
 		name      string
@@ -55,11 +57,14 @@ func Test_pageLinks(t *testing.T) {
 		wantRList []string
 	}{
 		// TODO: Add test cases.
-		{" 1", args{bu1, p1}, w1},
+		{" 1", args{bu1, p1, true}, w1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotRList := pageLinks(tt.args.aBaseURL, tt.args.aPage)
+			gotRList := pageLinks(tt.args.aBaseURL, tt.args.aPage, tt.args.aUseCGI)
+			// if !reflect.DeepEqual(gotRList, tt.wantRList) {
+			// 	t.Errorf("pageLinks() = %v, want %v", gotRList, tt.wantRList)
+			// }
 			if 0 == len(gotRList) {
 				t.Errorf("pageLinks() = %v, want (!nil)", gotRList)
 			}

@@ -51,9 +51,10 @@ var (
 //	`aBaseURL` The start of all the local URLs.
 //	`aURL` The page URL to process.
 //	`aList` The channel to receive the list of links.
-func goProcessURL(aBaseURL, aURL string, aList chan<- []string) {
+//	`aUseCGI` Flag determining whether to use CGI arguments or not.
+func goProcessURL(aBaseURL, aURL string, aList chan<- []string, aUseCGI bool) {
 	if page, err := readPage(aURL); nil == err {
-		if links := pageLinks(aBaseURL, page); nil != links {
+		if links := pageLinks(aBaseURL, page, aUseCGI); nil != links {
 			aList <- links
 		}
 	}
@@ -64,7 +65,8 @@ func goProcessURL(aBaseURL, aURL string, aList chan<- []string) {
 //
 //	`aBaseURL` The start of all the local URLs.
 //	`aPage` The web-page to handle.
-func pageLinks(aBaseURL string, aPage []byte) (rList []string) {
+//	`aUseCGI` Flag determining whether to use CGI arguments or not.
+func pageLinks(aBaseURL string, aPage []byte, aUseCGI bool) (rList []string) {
 	linkMatches := hrefRE.FindAllSubmatch(aPage, -1)
 	if nil == linkMatches {
 		return
@@ -72,6 +74,12 @@ func pageLinks(aBaseURL string, aPage []byte) (rList []string) {
 
 	for cnt, l := 0, len(linkMatches); cnt < l; cnt++ {
 		link := string(linkMatches[cnt][2])
+		cgi, qPos := "", strings.IndexByte(link, '?')
+		if 0 <= qPos {
+			cgi = link[qPos:]
+			link = link[:qPos]
+		}
+
 		if 0 < len(link) {
 			// check for certain binary file extensions
 			for _, ext := range binExts {
@@ -81,9 +89,13 @@ func pageLinks(aBaseURL string, aPage []byte) (rList []string) {
 				}
 			}
 		}
+		if aUseCGI && (0 <= qPos) {
+			link += cgi
+		}
 		if 0 == len(link) {
 			continue
 		}
+
 		if strings.HasPrefix(link, aBaseURL) {
 			rList = append(rList, link)
 		} else if strings.HasPrefix(link, `/`) {
@@ -145,7 +157,10 @@ const (
 
 // Crawl reads web-page links starting with `aStartURL`
 // returning the number pages checked.
-func Crawl(aStartURL string) int {
+//
+//	`aStartURL` URL to start zhr crawling with.
+//	`aUseCGI` Flag whether to use CGI arguments or not.
+func Crawl(aStartURL string, aUseCGI bool) int {
 	var (
 		checked  = make(map[string]bool)
 		empty    int
@@ -166,7 +181,7 @@ func Crawl(aStartURL string) int {
 					continue
 				}
 				checked[link] = true
-				go goProcessURL(baseURL, link, linkList)
+				go goProcessURL(baseURL, link, linkList, aUseCGI)
 			}
 
 		default:
