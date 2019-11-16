@@ -26,7 +26,7 @@ URL="${1:?MISSING_URL_ARGUMENT}"
 
 declare -i LOOP=0
 while [ ${LOOP} -lt ${INSTANCES} ] ; do
-	${KRABBEL} ${URL} >/dev/null &
+	${KRABBEL} -url="${URL}" -quiet=true &
 	let LOOP=$[LOOP + 1]
 done
 

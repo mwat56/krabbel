@@ -19,10 +19,11 @@ import (
 )
 
 // `getArguments()` returns the values of commandline arguments.
-func getArguments() (rURL string, rCGI bool) {
-	flag.StringVar(&rURL, "url", rURL, "the URL to start crawling")
+func getArguments() (rURL string, rCGI, rQuiet bool) {
 	rCGI = true
 	flag.BoolVar(&rCGI, "cgi", rCGI, "<bool> use CGI arguments")
+	flag.BoolVar(&rQuiet, "quiet", rQuiet, "<bool> suppress 'Reading…' output")
+	flag.StringVar(&rURL, "url", rURL, "<string> the URL to start crawling")
 
 	flag.Usage = showHelp
 	flag.Parse()
@@ -32,14 +33,14 @@ func getArguments() (rURL string, rCGI bool) {
 
 // `main()` runs the application.
 func main() {
-	URL, useCGI := getArguments()
-	if 0 == len(URL) {
+	startURL, useCGI, beQuiet := getArguments()
+	if 0 == len(startURL) {
 		showHelp()
 		os.Exit(1)
 	}
 
 	startTime := time.Now()
-	checked := krabbel.Crawl(URL, useCGI)
+	checked := krabbel.Crawl(startURL, useCGI, beQuiet)
 	elapsed := time.Since(startTime)
 	log.Printf("checked %d pages in %s", checked, elapsed)
 } // main()

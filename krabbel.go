@@ -52,8 +52,8 @@ var (
 //	`aURL` The page URL to process.
 //	`aList` The channel to receive the list of links.
 //	`aUseCGI` Flag determining whether to use CGI arguments or not.
-func goProcessURL(aBaseURL, aURL string, aList chan<- []string, aUseCGI bool) {
-	if page, err := readPage(aURL); nil == err {
+func goProcessURL(aBaseURL, aURL string, aList chan<- []string, aUseCGI, aQuiet bool) {
+	if page, err := readPage(aURL, aQuiet); nil == err {
 		if links := pageLinks(aBaseURL, page, aUseCGI); nil != links {
 			aList <- links
 		}
@@ -85,6 +85,7 @@ func pageLinks(aBaseURL string, aPage []byte, aUseCGI bool) (rList []string) {
 			for _, ext := range binExts {
 				if strings.HasSuffix(link, ext) {
 					link = ""
+					qPos = -1 // don't use CGI for ignored link
 					break
 				}
 			}
@@ -114,7 +115,7 @@ const (
 
 // `readPage()` requests a single page identified by `aURL`
 // returning its contents.
-func readPage(aURL string) ([]byte, error) {
+func readPage(aURL string, aQuiet bool) ([]byte, error) {
 	req, err := http.NewRequest(`GET`, aURL, nil)
 	if nil != err {
 		return nil, err
@@ -134,7 +135,10 @@ func readPage(aURL string) ([]byte, error) {
 		Timeout: 10 * time.Minute, // prepare for looong response bodies
 	}
 
-	fmt.Println(`Reading`, aURL)
+	if !aQuiet {
+		fmt.Println(`Reading`, aURL)
+	}
+
 	resp, err := client.Do(req)
 	if nil != err {
 		return nil, err
@@ -160,7 +164,8 @@ const (
 //
 //	`aStartURL` URL to start zhr crawling with.
 //	`aUseCGI` Flag whether to use CGI arguments or not.
-func Crawl(aStartURL string, aUseCGI bool) int {
+//	`aQuiet` Flag whether to suppress 'Reading…' output.
+func Crawl(aStartURL string, aUseCGI, aQuiet bool) int {
 	var (
 		checked  = make(map[string]bool)
 		empty    int
@@ -181,7 +186,7 @@ func Crawl(aStartURL string, aUseCGI bool) int {
 					continue
 				}
 				checked[link] = true
-				go goProcessURL(baseURL, link, linkList, aUseCGI)
+				go goProcessURL(baseURL, link, linkList, aUseCGI, aQuiet)
 			}
 
 		default:

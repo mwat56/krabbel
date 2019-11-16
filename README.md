@@ -34,13 +34,28 @@ First you've to compile the main file
 
 	go build app/krabble.go
 
-you can run it by calling it with the start URL to use, e.g.
+When running `krabbel` without commandline argments you'll get a short help-text:
+
+	$ ./krabbel
+
+	Usage: ./krabbel [OPTIONS]
+
+	-cgi
+		<bool> use CGI arguments (default true)
+	-quiet
+		<bool> suppress 'Reading…' output
+	-url string
+		<string> the URL to start crawling
+
+	$_
+
+Sp you run it by calling it with the start URL to use, e.g.
 
 	./krabbel -url http://127.0.0.1:8080/
 
 Depending on the number of linked pages it might run a few seconds while printing out the respective page processed and finally showing a line like
 
-	2019/10/28 23:37:41 checked 3422 pages in 5.9901556s
+	2019/12/18 23:37:41 checked 3422 pages in 5.9901556s
 
 The actual number of pages shown and the time used will, of course, change depending on the load of the computer you use to run the tool and the load of the server tested.
 Things like routing details and network latency will take their time as well.
@@ -53,6 +68,13 @@ In this cases the respective server's execution path may depend on the value of 
 	./krabbel -url=http://127.0.0.1:8080/ -cgi=false
 
 Here all possible CGI attributes of linked URLs will be ignored while crawling through the given URL's links.
+
+By default `krabbel` prints out every URL it processes.
+If you don't want/need that you can use the `-quit` option to suppress those messages:
+
+	./krabbel -url=http://127.0.0.1:8080/ -cgi=false -quiet=true
+
+Here only the final statistics line will be printed to screen.
 
 > Please _note_ that you should use this tool only with web-servers/-pages that you're personally responsible for.
 > Do _not_ use this tool with servers you don't own – that's not only impolite but also _illegal_ in certain countries.
