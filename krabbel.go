@@ -144,9 +144,15 @@ func readPage(aURL string, aQuiet bool) ([]byte, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	if http.StatusOK == resp.StatusCode {
-		return ioutil.ReadAll(resp.Body)
+	/*
+		if http.StatusOK == resp.StatusCode {
+			return ioutil.ReadAll(resp.Body)
+		}
+	*/
+	// We do NOT check for `http.StatusOK` to allow for crawling
+	// the read page's links.
+	if result, _ := ioutil.ReadAll(resp.Body); nil != result {
+		return result, nil
 	}
 
 	return nil, errors.New(http.StatusText(resp.StatusCode))
