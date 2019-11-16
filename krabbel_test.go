@@ -26,7 +26,7 @@ func Test_readPage(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{" 1", args{"http://www.mwat.de/", true}, w1, false},
-		{" 2", args{"http://mmm.mwat.de/bla", true}, w1, true},
+		{" 2", args{"http://mmm.mwat.de/bla", true}, w1, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
