@@ -1,5 +1,5 @@
 /*
-   Copyright © 2019 M.Watermann, 10247 Berlin, Germany
+   Copyright © 2019, 2020 M.Watermann, 10247 Berlin, Germany
                All rights reserved
            EMail : <support@mwat.de>
 */
@@ -168,7 +168,7 @@ const (
 // Crawl reads web-page links starting with `aStartURL`
 // returning the number pages checked.
 //
-//	`aStartURL` URL to start zhr crawling with.
+//	`aStartURL` URL to start the crawling with.
 //	`aUseCGI` Flag whether to use CGI arguments or not.
 //	`aQuiet` Flag whether to suppress 'Reading…' output.
 func Crawl(aStartURL string, aUseCGI, aQuiet bool) int {
