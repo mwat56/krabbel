@@ -49,7 +49,7 @@ When running `krabbel` without commandline argments you'll get a short help-text
 
 	$_
 
-Sp you run it by calling it with the start URL to use, e.g.
+So you run it by calling it with the start URL to use, e.g.
 
 	./krabbel -url http://127.0.0.1:8080/
 
@@ -61,16 +61,16 @@ The actual number of pages shown and the time used will, of course, change depen
 Things like routing details and network latency will take their time as well.
 In other words: This is _not_ a benchmarking tool.
 
-Sometimes the URLs in page links contain socalled CGI attributes carrying session specific data.
-In this cases the respective server's execution path may depend on the value of that CGI attribute.
-`krabbel` offers a second commandline option `-cgi`; this is a boolean value (default value is `true`) determining whether to use CGI attributes when crawling through the web pages or not:
+Sometimes the URLs in page links contain socalled CGI arguments carrying session and/or page specific data.
+In this cases the respective server's execution path may (or may not) depend on the value of that CGI argument(s).
+`krabbel` offers a second commandline option `-cgi`; this is a boolean value (default value is `true`) determining whether to use CGI argument(s) when crawling through the web pages or not:
 
 	./krabbel -url=http://127.0.0.1:8080/ -cgi=false
 
-Here all possible CGI attributes of linked URLs will be ignored while crawling through the given URL's links.
+Here all possible CGI argument(s) of linked URLs will be ignored while crawling through the given URL's links.
 
 By default `krabbel` prints out every URL it processes.
-If you don't want/need that you can use the `-quit` option to suppress those messages:
+If you don't want/need that you can use the `-quiet` option to suppress those messages:
 
 	./krabbel -url=http://127.0.0.1:8080/ -cgi=false -quiet=true
 
@@ -81,7 +81,7 @@ Here only the final statistics line will be printed to screen.
 
 ## Licence
 
-        Copyright © 2019 M.Watermann, 10247 Berlin, Germany
+        Copyright © 2019, 2020 M.Watermann, 10247 Berlin, Germany
                         All rights reserved
                     EMail : <support@mwat.de>
 
